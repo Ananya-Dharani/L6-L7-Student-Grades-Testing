@@ -1,12 +1,44 @@
 def average_marks(marks_csv):
-    marks = [int(m) for m in marks_csv.split(',')]
+    if not isinstance(marks_csv, str):
+        raise TypeError("marks_csv must be a string")
+
+    parts = [part.strip() for part in marks_csv.split(",")]
+    if not parts or any(part == "" for part in parts):
+        raise ValueError("marks_csv must contain comma-separated integers")
+
+    try:
+        marks = [int(part) for part in parts]
+    except (TypeError, ValueError) as exc:
+        raise ValueError("marks_csv must contain comma-separated integers") from exc
+
     return round(sum(marks) / len(marks), 2)
 
+
 def parse_srn(srn):
-    return srn[:4], int(srn[6:8]), srn[8:10]
+    if not isinstance(srn, str):
+        raise TypeError("srn must be a string")
+
+    srn = srn.strip()
+    if len(srn) < 10:
+        raise ValueError("srn must contain a campus, year, and department")
+
+    year = srn[6:8]
+    if not year.isdigit():
+        raise ValueError("srn year must contain two digits")
+
+    return srn[:4], int(year), srn[8:10]
+
 
 def short_name(full_name):
-    first, last = full_name.split()
+    if not isinstance(full_name, str):
+        raise TypeError("full_name must be a string")
+
+    name_parts = full_name.split()
+    if len(name_parts) < 2:
+        raise ValueError("full_name must contain a first and last name")
+
+    first = name_parts[0]
+    last = name_parts[-1]
     return first[0].upper() + ". " + last.capitalize()
 
 def main():
